@@ -1,0 +1,85 @@
+#include <IRremote.h>
+#define ENA 6 //БЫЛ НА 3
+#define IN1 8
+#define IN2 7
+#define IN3 12
+#define IN4 13
+#define ENB 5 // БЫЛ НА 11
+#define RECV_PIN 3 //БЫЛ НА 6
+
+IRrecv irrecv(RECV_PIN);
+
+decode_results results;
+
+void setup()
+{ pinMode(ENA, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(ENB, OUTPUT);
+  Serial.begin(9600);
+  // In case the interrupt driver crashes on setup, give a clue
+  // to the user what's going on.
+  Serial.println("Enabling IRin");
+  irrecv.enableIRIn(); // Start the receiver
+  Serial.println("Enabled IRin");
+}
+
+void loop() {
+  if (irrecv.decode(&results)) {
+    if (results.value == 1033561079) //вперед
+    { digitalWrite(IN4, HIGH);
+      digitalWrite(IN3, LOW);
+      digitalWrite(IN2, LOW);
+      digitalWrite(IN1, HIGH);
+      analogWrite(ENA, 255);
+      analogWrite(ENB, 255);
+    }
+    if (results.value == 16734885)//направо
+    { digitalWrite(IN4, LOW);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN2, LOW);
+      digitalWrite(IN1, HIGH);
+      analogWrite(ENA, 255);
+      analogWrite(ENB, 255);
+    }  
+    
+     if (results.value ==16716015) //налево
+     { digitalWrite(IN4, HIGH);  
+      digitalWrite(IN3, LOW);
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN1, LOW);
+      analogWrite(ENA, 255);
+      analogWrite(ENB, 255);
+     }
+     if (results.value ==16730805)//назад
+     {digitalWrite(IN4, LOW);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN1, LOW);
+      analogWrite(ENA, 255);
+      analogWrite(ENB, 255);
+     }
+     if (results.value ==16726215)//OK
+     {digitalWrite(IN4, LOW);
+      digitalWrite(IN3, LOW);
+      digitalWrite(IN2, LOW);
+      digitalWrite(IN1, LOW);
+     }
+      Serial.println(results.value, DEC);
+      irrecv.resume(); // Receive the next value
+    }
+    delay(100);
+  }
+
+
+
+  //16734885 НАПРАВО
+  //1033561079 ПРЯМО
+  //16730805 НАЗАД
+  //16718055 ВПЕРЕД
+  //4294967295 ПРИ ЗАДЕРЖКЕ
+  //16726215 OK
+  //16716015 налево
+
